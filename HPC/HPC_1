@@ -1,0 +1,115 @@
+#############################
+# get sra from SRR from SRA toolkit, repeat for all SRRs
+#############################
+wget --output-document sratoolkit.tar.gz http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz
+
+
+
+########################################
+# run the nextflow ChIP-seq pipeline by creating an environment under screen, repeat for all experiment datasets
+########################################
+
+screen -S chipseq 
+module load Anaconda2/5.3.0
+wget -qO- https://get.nextflow.io | bash
+module load Nextflow/19.10.0
+conda create -n nextflow-env nextflow
+conda activate nextflow-env
+nextflow run nf-core/chipseq -c parameter_SE.config -profile conda
+
+##############################
+# parameter setting of the config file
+##############################
+
+params.genome = 'GRCh38'
+params.save_reference = true
+params.single_end = true
+params.narrow_peak = true
+resume = true
+params.max_memory = '60.GB'
+
+#####################################
+# merge BAM files of replicates and call peaks
+#####################################
+
+#!/bin/bash -eu
+
+#load modules
+module load GCC/4.9.3-2.25  OpenMPI/1.10.2
+module load icc/2015.3.187-GNU-4.9.3-2.25  impi/5.0.3.048
+module load ifort/2015.3.187-GNU-4.9.3-2.25  impi/5.0.3.048
+module load MACS2/2.1.0.20150731-Python-2.7.11
+
+set -euxo pipefail
+
+# set HOME
+MYHOME=/home/gloriawu/snic2020-12-1/ChIP/analysis2022
+
+# input files
+BAM1=$MYHOME/34_46025_narrow/bwa/mergedLibrary/Cis_GATA1_34_1_R1.mLb.clN.sorted.bam
+BAM2=$MYHOME/34_46025_narrow/bwa/mergedLibrary/Cis_GATA1_34_1_R2.mLb.clN.sorted.bam
+BAM3=$MYHOME/erythroblast_1_narrow/bwa/mergedLibrary/GATA1_eryth_1_R1.mLb.clN.sorted.bam
+BAM4=$MYHOME/erythroblast_1_narrow/bwa/mergedLibrary/GATA1_eryth_1_R2.mLb.clN.sorted.bam
+control1=$MYHOME/34_46025_narrow/bwa/mergedLibrary/WT_CONTROL_R1.mLb.clN.sorted.bam
+control2=$MYHOME/erythroblast_1_narrow/bwa/mergedLibrary/WT_CONTROL_R1.mLb.clN.sorted.bam
+OUT=$MYHOME/GATA1/GATA1_GE34_merge_
+
+# run macs2 call peak
+
+macs2 callpeak -t $BAM1 $BAM2 $BAM3 $BAM4 -c $control1 $control2 -g hs --outdir $MYHOME/GATA1 -n $OUT -B -q 0.01
+
+
+#########################
+# merge narrow peak files
+#########################
+
+#!/bin/bash -eu
+
+set -euxo pipefail
+
+module load GCC/5.4.0-2.26
+module load OpenMPI/1.10.3
+module load impi/2017.1.132
+module load BEDTools/2.26.0
+
+cd /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/
+
+bedtools intersect -a Cis_GATA1_3_peaks.narrowPeak -b Cis_GATA1_12_1_peaks.narrowPeak Cis_GATA1_12_2_peaks.narrowPeak GATA1_GE34_merge__peaks.narrowPeak -c > Intersect_with_Cis_3_GATA1_adult.bed
+
+
+
+########################################
+# get fasta file on the merged bed files with hg38
+########################################
+
+
+#!/bin/bash -u
+
+
+set -euxo pipefail
+
+module load GCC/5.4.0-2.26
+module load OpenMPI/1.10.3
+module load impi/2017.1.132
+module load BEDTools/2.26.0
+
+
+
+bedtools getfasta -name -fi /home/gloriawu/reference/hg38/hg38.fa -bed /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/Intersect_with_Cis_3_GATA1_adult.bed -fo /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/intersect/Intersect_with_Cis_3_GATA1_adult.fa
+
+#######################################
+# Find GATA1 motif with FIMO from MEME suite
+########################################
+
+#!/bin/bash -e
+
+set -euxo pipefail
+
+module load GCC/7.3.0-2.30
+module load OpenMPI/3.1.1
+module load MEME/5.0.4
+
+fimo --thresh 1e-3 --max-stored-scores 1000000 --oc /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/intersect/Intersect_Cis_3_FIMO35_3 MA0035.3.meme /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/intersect/Intersect_with_Cis_3_GATA1_adult.fa
+
+## rename the file
+mv fimo.tsv Intersect_Cis_3_GATA1_FIMO35_3.tsv
