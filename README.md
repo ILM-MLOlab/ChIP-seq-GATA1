@@ -23,7 +23,7 @@ This project aims to find the GATA1 binding motifs in the blood group genes, uti
 * Change the file format, from tsv to bed file and get rid of the header to join FIMO and JASPAR files
 4. [OpenRefine_2](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/OpenRefine/OpenRefine_2) (part of the orange section in the figure)
 * Clean up the joined FIMO-JASPAR files by renaming, deleting and rearragning columns
-5. [HPC_3](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_3) (part of the purple section)
+5. [HPC_3](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_3) (part of the purple section in the figure)
 * Clean up the data to remove the header 
 6. [R script](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/R%20script/R%20script) (from purple to orange and then yellow section in the figure)
 * Annotate the peaks and join together with the FIMO-JASPAR track, and filter down to blood group genes
