@@ -1,0 +1,228 @@
+###############################
+# sort file structure using open Refine
+###############################
+#Load tsv file, create project 
+# split sequence_name by ::
+# delete empty column (sequence_name 2)
+# separate sequence_name 4 by -
+# rename sequence name column titles
+# split sequence_name 1 by /
+# remove all other columns but sequence_name 1 8, which is the ID for peaks
+# rename sequence_name 1 8 to sequence name
+# remove the first two columns which are the motif_id and motif_alt_id
+# sort by sequence name
+# move sequence_name columne to the 4th column to allow typical bed files at the start
+# make start and stop numbers
+# create column to calculate the motif start and motif stop
+# reorder columns 
+[
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "sequence_name",
+    "guessCellType": true,
+    "removeOriginalColumn": true,
+    "mode": "separator",
+    "separator": ":",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column sequence_name by separator"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 2",
+    "description": "Remove column sequence_name 2"
+  },
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "sequence_name 4",
+    "guessCellType": true,
+    "removeOriginalColumn": true,
+    "mode": "separator",
+    "separator": "-",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column sequence_name 4 by separator"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "sequence_name 3",
+    "newColumnName": "chr",
+    "description": "Rename column sequence_name 3 to chr"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "sequence_name 4 1",
+    "newColumnName": "peak_start",
+    "description": "Rename column sequence_name 4 1 to peak_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "sequence_name 4 2",
+    "newColumnName": "peak_end",
+    "description": "Rename column sequence_name 4 2 to peak_end"
+  },
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "sequence_name 1",
+    "guessCellType": true,
+    "removeOriginalColumn": true,
+    "mode": "separator",
+    "separator": "/",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column sequence_name 1 by separator"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 1",
+    "description": "Remove column sequence_name 1 1"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 2",
+    "description": "Remove column sequence_name 1 2"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 3",
+    "description": "Remove column sequence_name 1 3"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 4",
+    "description": "Remove column sequence_name 1 4"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 5",
+    "description": "Remove column sequence_name 1 5"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 6",
+    "description": "Remove column sequence_name 1 6"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "sequence_name 1 7",
+    "description": "Remove column sequence_name 1 7"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "sequence_name 1 8",
+    "newColumnName": "sequence_name",
+    "description": "Rename column sequence_name 1 8 to sequence_name"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "motif_id",
+    "description": "Remove column motif_id"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "motif_alt_id",
+    "description": "Remove column motif_alt_id"
+  },
+  {
+    "op": "core/column-move",
+    "columnName": "sequence_name",
+    "index": 1,
+    "description": "Move column sequence_name to position 1"
+  },
+  {
+    "op": "core/column-move",
+    "columnName": "sequence_name",
+    "index": 2,
+    "description": "Move column sequence_name to position 2"
+  },
+  {
+    "op": "core/column-move",
+    "columnName": "sequence_name",
+    "index": 3,
+    "description": "Move column sequence_name to position 3"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "start",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column start using expression value.toNumber()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "stop",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column stop using expression value.toNumber()"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "peak_start",
+    "expression": "grel:value+cells['start'].value",
+    "onError": "set-to-blank",
+    "newColumnName": "FIMO_motif_start",
+    "columnInsertIndex": 2,
+    "description": "Create column FIMO_motif_start at index 2 based on column peak_start using expression grel:value+cells['start'].value"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "peak_start",
+    "expression": "grel:value+cells['stop'].value",
+    "onError": "set-to-blank",
+    "newColumnName": "FIMO_motif_stop",
+    "columnInsertIndex": 2,
+    "description": "Create column FIMO_motif_stop at index 2 based on column peak_start using expression grel:value+cells['stop'].value"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "chr",
+      "FIMO_motif_start",
+      "FIMO_motif_stop",
+      "sequence_name",
+      "peak_start",
+      "peak_end",
+      "start",
+      "stop",
+      "strand",
+      "score",
+      "p-value",
+      "q-value",
+      "matched_sequence"
+    ],
+    "description": "Reorder columns"
+  }
+]
+
