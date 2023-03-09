@@ -29,7 +29,7 @@ This project aims to find the GATA1 binding motifs in the blood group genes, uti
 * Annotate the peaks and join together with the FIMO-JASPAR track, and filter down to blood group genes
 7. [OpenRefine_3](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/OpenRefine/OpenRefine_3) (yellow section in the figure)
 * Clean up the annotated file to remove and rename fields appropriately
-8. After step 7, there will be 359 rows, then we further filtered it down by in OpenRefine to facet the column "SYMBOL" and exclude the transcription factor gene "GATA1" and "KLF1", and facet the column "overlap" to exclude the value of "0". Now it's 193 rows that is only blood group genes and have at least 2 data sets having peaks overlapping at the site of the motif.
+8. After step 7, there will be 359 rows, then we further filtered it down by in OpenRefine to facet the column "SYMBOL" and exclude the transcription factor genes "GATA1" and "KLF1", and facet the column "overlap" to exclude the value of "0". Now, there should be 193 rows that are found only in blood group genes and have at least 2 data sets having peaks overlapping at the site of the motif.
 
 ## Author
 Ping Chun Wu
