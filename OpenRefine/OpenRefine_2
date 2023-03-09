@@ -1,0 +1,312 @@
+###########################################
+# clean up with open refine for the FIMO-JASPAR file
+###########################################
+
+# Load file, 0 line as column headers, create project
+# make numbers for the variables need to be calculated
+# create column to calculate the difference in base pairs between FIMO and JASPAR motif start sites
+# rename the columns
+# delete unnecessary columns
+# rearrange the columns
+
+[
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Column 2",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column Column 2 using expression value.toNumber()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Column 15",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column Column 15 using expression value.toNumber()"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "Column 2",
+    "expression": "grel:value-cells['Column 15'].value",
+    "onError": "set-to-blank",
+    "newColumnName": "diff_FIMO_Jaspar",
+    "columnInsertIndex": 2,
+    "description": "Create column diff_FIMO_Jaspar at index 2 based on column Column 2 using expression grel:value-cells['Column 15'].value"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 1",
+    "newColumnName": "chr",
+    "description": "Rename column Column 1 to chr"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 2",
+    "newColumnName": "FIMO_start",
+    "description": "Rename column Column 2 to FIMO_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 3",
+    "newColumnName": "FIMO_stop",
+    "description": "Rename column Column 3 to FIMO_stop"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 4",
+    "newColumnName": "sequence_name",
+    "description": "Rename column Column 4 to sequence_name"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 5",
+    "newColumnName": "peak_start",
+    "description": "Rename column Column 5 to peak_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 6",
+    "newColumnName": "peak_end",
+    "description": "Rename column Column 6 to peak_end"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 7",
+    "newColumnName": "start",
+    "description": "Rename column Column 7 to start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 8",
+    "newColumnName": "stop",
+    "description": "Rename column Column 8 to stop"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 9",
+    "newColumnName": "strand",
+    "description": "Rename column Column 9 to strand"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 10",
+    "newColumnName": "FIMO_score",
+    "description": "Rename column Column 10 to FIMO_score"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 11",
+    "newColumnName": "FIMO_pValue",
+    "description": "Rename column Column 11 to FIMO_pValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 12",
+    "newColumnName": "FIMO_qValue",
+    "description": "Rename column Column 12 to FIMO_qValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 13",
+    "newColumnName": "FIMO_matched_sequence",
+    "description": "Rename column Column 13 to FIMO_matched_sequence"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 15",
+    "newColumnName": "JASPAR_start",
+    "description": "Rename column Column 15 to JASPAR_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 16",
+    "newColumnName": "JASPAR_stop",
+    "description": "Rename column Column 16 to JASPAR_stop"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 17",
+    "description": "Remove column Column 17"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 18",
+    "newColumnName": "JASPAR_score",
+    "description": "Rename column Column 18 to JASPAR_score"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 14",
+    "newColumnName": "chromosome",
+    "description": "Rename column Column 14 to chromosome"
+  },
+  {
+    "op": "core/column-reorder",
+    "columnNames": [
+      "chr",
+      "FIMO_start",
+      "FIMO_stop",
+      "FIMO_score",
+      "FIMO_pValue",
+      "FIMO_qValue",
+      "FIMO_matched_sequence",
+      "chromosome",
+      "JASPAR_start",
+      "JASPAR_stop",
+      "JASPAR_score",
+      "diff_FIMO_Jaspar",
+      "sequence_name",
+      "peak_start",
+      "peak_end",
+      "start",
+      "stop",
+      "strand"
+    ],
+    "description": "Reorder columns"
+  }
+]
+
+
+###################################################
+# clean up with open refine for the intersect file with overlaps
+###################################################
+# Load file, 0 line as column headers, create project
+# split column 4 
+# remove all other column 4s but keep column 4 8, which is the peak ID
+# remove column 6 which is single .
+# rename all fields
+
+[
+  {
+    "op": "core/column-split",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "Column 4",
+    "guessCellType": true,
+    "removeOriginalColumn": true,
+    "mode": "separator",
+    "separator": "/",
+    "regex": false,
+    "maxColumns": 0,
+    "description": "Split column Column 4 by separator"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 1",
+    "description": "Remove column Column 4 1"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 2",
+    "description": "Remove column Column 4 2"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 3",
+    "description": "Remove column Column 4 3"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 4",
+    "description": "Remove column Column 4 4"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 5",
+    "description": "Remove column Column 4 5"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 6",
+    "description": "Remove column Column 4 6"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 4 7",
+    "description": "Remove column Column 4 7"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "Column 6",
+    "description": "Remove column Column 6"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 1",
+    "newColumnName": "chr",
+    "description": "Rename column Column 1 to chr"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 2",
+    "newColumnName": "peak_start",
+    "description": "Rename column Column 2 to peak_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 3",
+    "newColumnName": "peak_end",
+    "description": "Rename column Column 3 to peak_end"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 4 8",
+    "newColumnName": "sequence_name",
+    "description": "Rename column Column 4 8 to sequence_name"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 5",
+    "newColumnName": "peak_score",
+    "description": "Rename column Column 5 to peak_score"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 7",
+    "newColumnName": "signal_value",
+    "description": "Rename column Column 7 to signal_value"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 8",
+    "newColumnName": "pValue",
+    "description": "Rename column Column 8 to pValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 9",
+    "newColumnName": "qValue",
+    "description": "Rename column Column 9 to qValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 10",
+    "newColumnName": "peak_summit",
+    "description": "Rename column Column 10 to peak_summit"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "Column 11",
+    "newColumnName": "overlap",
+    "description": "Rename column Column 11 to overlap"
+  }
+]
+
