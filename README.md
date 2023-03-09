@@ -15,11 +15,11 @@ This project aims to find the GATA1 binding motifs in the blood group genes, uti
 * Rstudio, version 3.6.3
 
 ## Executing scripts in transition between platforms
-1. [HPC_1](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_1) (from blue to purple and to part of oragne section in the figure)
+1. [HPC_1](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_1) (from blue to purple and to part of orange section in the figure)
 * Download the public dataset directly to HPC, and individually process through nf-core ChIP-seq analysis pipeline, merge BAM files for the replicate datasets and, intersect all narrow peaks, get FASTA file on the merged bed file with hg38, and find GATA1 motif with FIMO from MEME suite.
 2. [OpenRefine_1](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/OpenRefine/OpenRefine_1) (part of the orange section in the figure)
 * To sort the FIMO files in proper order to be combined togeher with the JASPAR track from the [JASPAR function](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/tree/main/JasparFunctions)
-3. [HPC_2](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_2) (part of the oragne section in the figure)
+3. [HPC_2](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/HPC/HPC_2) (part of the orange section in the figure)
 * Change the file format, from tsv to bed file and get rid of the header to join FIMO and JASPAR files
 4. [OpenRefine_2](https://github.com/ILM-MLOlab/ChIP-seq-GATA1/blob/main/OpenRefine/OpenRefine_2) (part of the orange section in the figure)
 * Clean up the joined FIMO-JASPAR files by renaming, deleting and rearragning columns
