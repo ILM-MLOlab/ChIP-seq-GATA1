@@ -1,0 +1,47 @@
+#############################################
+# change tsv to bed and make sure no weird characters
+#############################################
+
+mv Intersect_Cis_3_GATA1_FIMO35_3_sort.tsv Intersect_Cis_3_GATA1_FIMO35_3_sort.bed
+cat Intersect_Cis_3_GATA1_FIMO35_3_sort.bed | tr -d '\r' > Intersect_Cis_3_GATA1_FIMO35_3_sorted.bed
+
+########################
+# intersect FIMO and JASPAR
+########################
+
+# get rid of header
+tail -n +2 Intersect_Cis_3_GATA1_FIMO35_3_sorted.bed > file.tmp && mv file.tmp Intersect_Cis_3_GATA1_FIMO35_3_sort_noheader.bed
+
+# sort
+
+#!/bin/bash -eu
+
+set -euxo pipefail
+
+module load GCC/5.4.0-2.26
+module load OpenMPI/1.10.3
+module load impi/2017.1.132
+module load BEDTools/2.26.0
+
+cd /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/intersect
+
+bedtools sort -i Intersect_Cis_3_GATA1_FIMO35_3_sort_noheader.bed > Intersect_Cis_3_GATA1_FIMO35_3_noheader_sort.bed
+
+bedtools sort -i MA0035.3_GATA1_chr_hg38.bed > MA0035.3_GATA1_chr_hg38_sort.bed
+
+# merge
+
+#!/bin/bash -eu
+
+set -euxo pipefail
+
+module load GCC/5.4.0-2.26
+module load OpenMPI/1.10.3
+module load impi/2017.1.132
+module load BEDTools/2.26.0
+
+cd /home/gloriawu/snic2020-12-1/ChIP/analysis2022/GATA1/intersect
+
+bedtools intersect -wa -wb -a Intersect_Cis_3_GATA1_FIMO35_3_noheader_sort.bed -b MA0035.3_GATA1_chr_hg38_sort.bed > Intersect_with_Cis_3_GATA1_FIMO_JASPAR.bed
+
+
