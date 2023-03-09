@@ -1,0 +1,181 @@
+######################################
+# clean up the annotated data by OpenRefine
+######################################
+# Load file and create project
+# compare the fields for the peak start and end to make sure it’s the same
+# all 359 end at the same position, and 1 bp difference from the start site
+# remove unnecessary fields
+# rename fields
+
+[
+  {
+    "op": "core/column-removal",
+    "columnName": "strand.x",
+    "description": "Remove column strand.x"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "end",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column end using expression value.toNumber()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "peak_end",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column peak_end using expression value.toNumber()"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "peak_end",
+    "expression": "grel:value-cells['end'].value",
+    "onError": "set-to-blank",
+    "newColumnName": "diff_peak_ends",
+    "columnInsertIndex": 37,
+    "description": "Create column diff_peak_ends at index 37 based on column peak_end using expression grel:value-cells['end'].value"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "peak_start",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column peak_start using expression value.toNumber()"
+  },
+  {
+    "op": "core/text-transform",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "columnName": "start.x",
+    "expression": "value.toNumber()",
+    "onError": "keep-original",
+    "repeat": false,
+    "repeatCount": 10,
+    "description": "Text transform on cells in column start.x using expression value.toNumber()"
+  },
+  {
+    "op": "core/column-addition",
+    "engineConfig": {
+      "facets": [],
+      "mode": "row-based"
+    },
+    "baseColumnName": "start.x",
+    "expression": "grel:value-cells['peak_start'].value",
+    "onError": "set-to-blank",
+    "newColumnName": "diff_peak_starts",
+    "columnInsertIndex": 2,
+    "description": "Create column diff_peak_starts at index 2 based on column start.x using expression grel:value-cells['peak_start'].value"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "diff_peak_starts",
+    "description": "Remove column diff_peak_starts"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "diff_peak_ends",
+    "description": "Remove column diff_peak_ends"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "peak_start",
+    "description": "Remove column peak_start"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "peak_end",
+    "description": "Remove column peak_end"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "start.y",
+    "description": "Remove column start.y"
+  },
+  {
+    "op": "core/column-removal",
+    "columnName": "stop",
+    "description": "Remove column stop"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "start.x",
+    "newColumnName": "peak_start",
+    "description": "Rename column start.x to peak_start"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "end",
+    "newColumnName": "peak_end",
+    "description": "Rename column end to peak_end"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "width",
+    "newColumnName": "peak_width",
+    "description": "Rename column width to peak_width"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "signal_value",
+    "newColumnName": "peak_signal_value",
+    "description": "Rename column signal_value to peak_signal_value"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "pValue",
+    "newColumnName": "peak_pValue",
+    "description": "Rename column pValue to peak_pValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "qValue",
+    "newColumnName": "peak_qValue",
+    "description": "Rename column qValue to peak_qValue"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "strand.y",
+    "newColumnName": "strand",
+    "description": "Rename column strand.y to strand"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "chr",
+    "newColumnName": "FIMO_chr",
+    "description": "Rename column chr to FIMO_chr"
+  },
+  {
+    "op": "core/column-rename",
+    "oldColumnName": "chromosome",
+    "newColumnName": "JASPAR_chr",
+    "description": "Rename column chromosome to JASPAR_chr"
+  }
+]
+
+
+
