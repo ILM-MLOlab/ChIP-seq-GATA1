@@ -1,0 +1,6 @@
+#################################################################
+# clean up the data before working  with intersect cis adult file to annotate in R
+#################################################################
+
+# first cut the header
+tail -n +2 Intersect_with_Cis_3_GATA1_adult_sort.bed > file.tmp && mv file.tmp Intersect_with_Cis_3_GATA1_adult_sort.bed
